@@ -1,0 +1,106 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Package main",
+    "version": "0.0.1"
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "paths": {
+    "/ticket/{id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "getTicket",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/ticket_options": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "postTicket",
+        "parameters": [
+          {
+            "$ref": "#/definitions/Ticket",
+            "in": "body"
+          }
+        ]
+      }
+    },
+    "/ticket_options/{id}/purchase": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "purchaseTicket",
+        "parameters": [
+          {
+            "$ref": "#/definitions/TicketPurchase",
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "allocation": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Allocation"
+        },
+        "desc": {
+          "type": "string",
+          "x-go-name": "Desc"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/cmbaykal/go-postgre-task/models"
+    },
+    "TicketPurchase": {
+      "type": "object",
+      "properties": {
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Quantity"
+        },
+        "user_id": {
+          "type": "string",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/cmbaykal/go-postgre-task/models"
+    }
+  }
+}

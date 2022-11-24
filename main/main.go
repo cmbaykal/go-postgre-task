@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cmbaykal/go-postgre-task/database"
-	"github.com/cmbaykal/go-postgre-task/models"
-	"github.com/cmbaykal/go-postgre-task/routes"
+	"github.com/cmbaykal/go-postgre-task/main/database"
+	"github.com/cmbaykal/go-postgre-task/main/models"
+	"github.com/cmbaykal/go-postgre-task/main/routes"
 	"github.com/gorilla/mux"
 )
 
@@ -20,6 +20,9 @@ func main() {
 	r.HandleFunc("/ticket/{id}", routes.GetTicket).Methods("GET")
 	r.HandleFunc("/ticket_options/{id}/purchase", routes.PurchaseTicket).Methods("POST")
 
-	fmt.Println("Starting Server port 3000")
+	fs := http.FileServer(http.Dir("../swaggerui"))
+	r.PathPrefix("/swaggerui/").Handler(http.StripPrefix("/swaggerui/", fs))
+
+	fmt.Println("Starting Api Server port 3000")
 	log.Fatal(http.ListenAndServe(":3000", r))
 }

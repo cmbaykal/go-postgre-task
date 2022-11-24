@@ -4,11 +4,24 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/cmbaykal/go-postgre-task/database"
-	"github.com/cmbaykal/go-postgre-task/models"
+	"github.com/cmbaykal/go-postgre-task/main/database"
+	"github.com/cmbaykal/go-postgre-task/main/models"
 	"github.com/gorilla/mux"
 )
 
+// swagger:operation POST /ticket_options postTicket
+// ---
+// produces:
+// - application/json
+// parameters:
+//   - in: body
+//     item:
+//     "$ref": "#/definitions/Ticket"
+//
+// responses:
+//
+//	'200':
+//	  description: Ticket response
 func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	var ticket models.Ticket
 	json.NewDecoder(r.Body).Decode(&ticket)
@@ -23,6 +36,20 @@ func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// swagger:operation GET /ticket/{id} getTicket
+// ---
+// produces:
+// - application/json
+// parameters:
+//   - name: id
+//     in: path
+//     required: true
+//     type: string
+//
+// responses:
+//
+//	'200':
+//	  description: Ticket response
 func GetTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
@@ -38,6 +65,19 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// swagger:operation POST /ticket_options/{id}/purchase purchaseTicket
+// ---
+// produces:
+// - application/json
+// parameters:
+//   - in: body
+//     item:
+//     "$ref": "#/definitions/TicketPurchase"
+//
+// responses:
+//
+//	'200':
+//	  description: Purchase response
 func PurchaseTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
@@ -47,8 +87,8 @@ func PurchaseTicket(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&purchase)
 
 	if ticket.Allocation >= purchase.Quantity {
-		database.Db.Model(&models.Ticket{}).Where("id = ?", ticket.ID).Update("allocation", ticket.Allocation - purchase.Quantity)
-		
+		database.Db.Model(&models.Ticket{}).Where("id = ?", ticket.ID).Update("allocation", ticket.Allocation-purchase.Quantity)
+
 		w.Write([]byte("Purchase Complete"))
 		w.WriteHeader(http.StatusOK)
 	} else {

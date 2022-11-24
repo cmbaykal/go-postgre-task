@@ -1,5 +1,5 @@
 # Binaries for programs and plugins
-/pgdata
+
 *.exe
 *.exe~
 *.dll
@@ -14,5 +14,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+pgdata/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Go
