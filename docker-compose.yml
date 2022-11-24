@@ -17,9 +17,9 @@ services:
     image: postgres:alpine
     container_name: postgres_container
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres  
-      - DATABASE_HOST=localhost
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres  
+      DATABASE_HOST: localhost
     ports:
       - '5433:5433'
     volumes:
