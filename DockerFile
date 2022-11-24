@@ -1,20 +1,14 @@
 FROM golang:latest
 
-ENV GO111MODULE=on
-
-RUN pwd
-
 RUN mkdir /build
-
 WORKDIR /build
 
-RUN go get github.com/cmbaykal/go-postgre-task
+ENV GO111MODULE=on
 
-RUN cd /build && git clone https://github.com/cmbaykal/go-postgre-task
+RUN cd /build && git clone https://github.com/cmbaykal/go-postgre-task.git
 
 RUN cd /build/go-postgre-task/ && go build -o main .
 
 EXPOSE 3000 
-EXPOSE 5432
 
 ENTRYPOINT "/build/go-postgre-task/main"
