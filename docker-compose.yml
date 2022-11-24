@@ -11,14 +11,14 @@ services:
     tty: true
     build: .
     ports:
-      - 8000:8080
+      - 3000:3000
     restart: on-failure
     volumes:
       - .:/app
     depends_on:
       - postgresdb
     networks:
-      - learning
+      - baikal
 
   postgresdb:
     image: postgres:latest
@@ -29,32 +29,17 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - DATABASE_HOST=${DB_HOST}
     ports:
-      - '1234:5432'
+      - '5432:5432'
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data
     networks:
-      - learning
-
-  postgresdb_test:
-    image: postgres:latest
-    container_name: postgres_test_container
-    environment:
-      - POSTGRES_USER=${TEST_DB_USER}
-      - POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
-      - POSTGRES_DB=${TEST_DB_NAME}
-      - DATABASE_HOST=${TEST_DB_HOST}
-    ports:
-      - '4568:5432'
-    volumes:
-      - ./pg_data_test:/var/lib/postgresql/data
-    networks:
-      - learning
+      - baikal
 
 volumes:
-  pg_data:
-  pg_data_test:
+  database:
+  app:
 
 # Networks to be created to facilitate communication between containers
 networks:
-  learning:
+  baikal:
     driver: bridge

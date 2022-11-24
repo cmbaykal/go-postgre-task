@@ -2,9 +2,13 @@ FROM golang:latest
 
 ENV GO111MODULE=on
 
+RUN pwd
+
 RUN mkdir /build
 
 WORKDIR /build
+
+RUN go get github.com/cmbaykal/go-postgre-task
 
 RUN cd /build && git clone https://github.com/cmbaykal/go-postgre-task
 
