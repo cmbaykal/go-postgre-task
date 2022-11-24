@@ -1,0 +1,14 @@
+FROM golang:latest
+
+RUN mkdir /build
+WORKDIR /build
+
+RUN expert GO111MODULE=on
+RUN go get github.com/cmbaykal/go-postgre-task
+RUN cd /build && git clone https://github.com/cmbaykal/go-postgre-task
+
+RUN cd /build/go-postgre-task/ && go build
+
+EXPOSE 3000
+
+ENTRYPOINT "/build/go-postgre-task/main"
