@@ -2,17 +2,10 @@ version: '3.9'
 services:
   app:
     container_name: golang_container
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      - DATABASE_HOST=${DB_HOST}
-      - DATABASE_PORT=${DB_PORT}
     tty: true
     build: .
     ports:
       - 3000:3000
-    restart: on-failure
     volumes:
       - .:/app
     depends_on:
@@ -21,22 +14,34 @@ services:
       - baikal
 
   postgresdb:
-    image: postgres:latest
+    image: postgres:alpine
     container_name: postgres_container
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      - DATABASE_HOST=${DB_HOST}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres  
     ports:
       - '5433:5433'
     volumes:
-      - ./database:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
+      - baikal
+
+  pg-admin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@email.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
+    depends_on:
+      - postgresdb
+    ports:
+      - "5050:5050"
     networks:
       - baikal
 
 volumes:
-  database:
+  pgdata:
 
 # Networks to be created to facilitate communication between containers
 networks:
