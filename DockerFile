@@ -2,13 +2,12 @@ FROM golang:latest
 
 RUN mkdir /build
 WORKDIR /build
+ADD . /build/
 
-ENV GO111MODULE=on
+RUN cd /build
 
-RUN cd /build && git clone https://github.com/cmbaykal/go-postgre-task.git
-
-RUN cd /build/go-postgre-task/ && go build -o main .
+RUN go build -o main .
 
 EXPOSE 3000 
 
-ENTRYPOINT "/build/go-postgre-task/main"
+ENTRYPOINT "/build/main"
