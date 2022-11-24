@@ -17,15 +17,19 @@ services:
     image: postgres:alpine
     container_name: postgres_container
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres  
-      DATABASE_HOST: localhost
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres  
+      - DATABASE_HOST=172.19.0.2
+    expose:
+      - "5434"
     ports:
-      - '5433:5433'
+      - "5434:5435"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    command: -p 5434
     networks:
       - baikal
+      
 
   pg-admin:
     image: dpage/pgadmin4

@@ -1,1 +1,1 @@
-/usr/local/bin/postgres
+/usr/local/bin/postgres "-p" "5434"
