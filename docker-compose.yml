@@ -1,55 +1,25 @@
-version: '3.9'
+version: "4.0"  # optional since v1.27.0
 services:
-  app:
-    container_name: golang_container
-    tty: true
-    build: .
-    ports:
-      - 3000:3000
-    restart: on-failure
-    volumes:
-      - .:/app
-    depends_on:
-      - postgresdb
-    networks:
-      - baikal
-
-  postgresdb:
-    image: postgres:alpine
-    container_name: postgres_container
+  postgres:
+    image: postgres
     environment:
-      - POSTGRES_USER={DB_USER}
-      - POSTGRES_PASSWORD={DB_PASSWORD}  
-      - DATABASE_HOST={DB_HOST}
-    expose:
-      - "5434"
-    ports:
-      - "5434:5435"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      POSTGRES_USER: baikal
+      POSTGRES_PASSWORD: 12345678
+    ports: ["5434"]
     command: -p 5434
-    networks:
-      - baikal
-      
 
   pg-admin:
     image: dpage/pgadmin4
-    container_name: pgadmin_container
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@email.com
       - PGADMIN_DEFAULT_PASSWORD=admin
       - PGADMIN_LISTEN_PORT=5050
-    depends_on:
-      - postgresdb
+    depends_on: ["postgres"]
     ports:
-      - "5050:5050"
-    networks:
-      - baikal
+      ["5050:5050"]
 
-volumes:
-  pgdata:
-
-# Networks to be created to facilitate communication between containers
-networks:
-  baikal:
-    driver: bridge
+  go-app:
+    build: .
+    ports:
+      ["3000:3000"]
+    depends_on: ["postgres"]

@@ -1,44 +1,18 @@
 package database
 
 import (
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+var DSN = "host=postgres user=baikal password=12345678 dbname=postgres port=5434"
 var Db *gorm.DB
 var err error
 
-type DBConfig struct {
-	Host     string
-	Port     int
-	User     string
-	DBName   string
-	Password string
-}
-
-func DbURL() string {
-	err := godotenv.Load("../.env")
-
-	if err != nil {
-		fmt.Println("Can not read enviroment config")
-	}
-
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-
-	return fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable", dbUser, dbPassword, dbName, dbHost, dbPort)
-}
-
 func Connect() {
-	Db, err = gorm.Open(postgres.Open(DbURL()), &gorm.Config{})
+	Db, err = gorm.Open(postgres.Open(DSN), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	} else {
