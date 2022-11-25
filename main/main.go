@@ -16,9 +16,9 @@ func main() {
 	database.Db.AutoMigrate(&models.Ticket{})
 
 	r := mux.NewRouter()
-	r.HandleFunc("/ticket_options", routes.CreateTicket).Methods("POST")
-	r.HandleFunc("/ticket/{id}", routes.GetTicket).Methods("GET")
-	r.HandleFunc("/ticket_options/{id}/purchase", routes.PurchaseTicket).Methods("POST")
+	r.HandleFunc("/ticket_options", routes.CreateTicket).Methods(http.MethodPost)
+	r.HandleFunc("/ticket/{id}", routes.GetTicket).Methods(http.MethodGet)
+	r.HandleFunc("/ticket_options/{id}/purchase", routes.PurchaseTicket).Methods(http.MethodPost)
 
 	fs := http.FileServer(http.Dir("../swaggerui"))
 	r.PathPrefix("/swaggerui/").Handler(http.StripPrefix("/swaggerui/", fs))

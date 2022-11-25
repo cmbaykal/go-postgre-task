@@ -19,12 +19,14 @@ import (
 //     description: Ticket options body for allocation
 //     required: true
 //     schema:
-//       "$ref": "#/definitions/Ticket"
+//     "$ref": "#/definitions/Ticket"
+//
 // responses:
-//   '200':
-//     description: Created Ticket Body
-//     schema:
-//       "$ref": "#/definitions/Ticket"
+//
+//	'200':
+//	  description: Created Ticket Body
+//	  schema:
+//	    "$ref": "#/definitions/Ticket"
 func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	var ticket models.Ticket
 	json.NewDecoder(r.Body).Decode(&ticket)
@@ -48,11 +50,13 @@ func CreateTicket(w http.ResponseWriter, r *http.Request) {
 //     in: path
 //     required: true
 //     type: string
+//
 // responses:
-//   '200':
-//     description: Found Ticket Body
-//     schema:
-//       "$ref": "#/definitions/Ticket"
+//
+//	'200':
+//	  description: Found Ticket Body
+//	  schema:
+//	    "$ref": "#/definitions/Ticket"
 func GetTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
@@ -78,8 +82,10 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 //     description: Ticket Purchase body for purchase
 //     required: true
 //     schema:
-//       "$ref": "#/definitions/Ticket"
+//     "$ref": "#/definitions/Ticket"
+//
 // responses:
+//
 //	'200':
 //	  description: Purchase Complete response
 func PurchaseTicket(w http.ResponseWriter, r *http.Request) {
