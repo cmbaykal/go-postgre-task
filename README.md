@@ -1,3 +1,7 @@
+Test Commands:
+
+- cd /test
+- go test -v
 
 Docker commands:
 
@@ -7,7 +11,3 @@ Docker commands:
 Swagger commands:
 
 - swagger generate spec --scan-models --output=./swaggerui/swagger.json
-
-TODO 
-
-- implement unit tests
