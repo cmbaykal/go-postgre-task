@@ -14,7 +14,7 @@
     "description": "Package main",
     "version": "0.0.1"
   },
-  "host": "localhost:3001",
+  "host": "localhost:3000",
   "basePath": "/",
   "paths": {
     "/ticket/{id}": {
@@ -30,7 +30,15 @@
             "in": "path",
             "required": true
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Found Ticket Body",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
       }
     },
     "/ticket_options": {
@@ -41,10 +49,23 @@
         "operationId": "postTicket",
         "parameters": [
           {
-            "$ref": "#/definitions/Ticket",
-            "in": "body"
+            "description": "Ticket options body for allocation",
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Created Ticket Body",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        }
       }
     },
     "/ticket_options/{id}/purchase": {
@@ -55,8 +76,13 @@
         "operationId": "purchaseTicket",
         "parameters": [
           {
-            "$ref": "#/definitions/TicketPurchase",
-            "in": "body"
+            "description": "Ticket Purchase body for purchase",
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
           }
         ]
       }
@@ -85,7 +111,7 @@
           "x-go-name": "Name"
         }
       },
-      "x-go-package": "github.com/cmbaykal/go-postgre-task/models"
+      "x-go-package": "github.com/cmbaykal/go-postgre-task/main/models"
     },
     "TicketPurchase": {
       "type": "object",
@@ -100,7 +126,7 @@
           "x-go-name": "UserID"
         }
       },
-      "x-go-package": "github.com/cmbaykal/go-postgre-task/models"
+      "x-go-package": "github.com/cmbaykal/go-postgre-task/main/models"
     }
   }
 }

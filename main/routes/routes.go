@@ -14,14 +14,17 @@ import (
 // produces:
 // - application/json
 // parameters:
-//   - in: body
-//     item:
-//     "$ref": "#/definitions/Ticket"
-//
+//   - name: Body
+//     in: body
+//     description: Ticket options body for allocation
+//     required: true
+//     schema:
+//       "$ref": "#/definitions/Ticket"
 // responses:
-//
-//	'200':
-//	  description: Ticket response
+//   '200':
+//     description: Created Ticket Body
+//     schema:
+//       "$ref": "#/definitions/Ticket"
 func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	var ticket models.Ticket
 	json.NewDecoder(r.Body).Decode(&ticket)
@@ -45,11 +48,11 @@ func CreateTicket(w http.ResponseWriter, r *http.Request) {
 //     in: path
 //     required: true
 //     type: string
-//
 // responses:
-//
-//	'200':
-//	  description: Ticket response
+//   '200':
+//     description: Found Ticket Body
+//     schema:
+//       "$ref": "#/definitions/Ticket"
 func GetTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
@@ -70,14 +73,15 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 // produces:
 // - application/json
 // parameters:
-//   - in: body
-//     item:
-//     "$ref": "#/definitions/TicketPurchase"
-//
+//   - name: Body
+//     in: body
+//     description: Ticket Purchase body for purchase
+//     required: true
+//     schema:
+//       "$ref": "#/definitions/Ticket"
 // responses:
-//
 //	'200':
-//	  description: Purchase response
+//	  description: Purchase Complete response
 func PurchaseTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
