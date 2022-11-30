@@ -2,11 +2,13 @@ package routes
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/cmbaykal/go-postgre-task/main/database"
 	"github.com/cmbaykal/go-postgre-task/main/models"
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 // swagger:operation POST /ticket_options postTicket
@@ -28,15 +30,21 @@ import (
 func CreateTicket(w http.ResponseWriter, r *http.Request) {
 	var ticket models.Ticket
 	json.NewDecoder(r.Body).Decode(&ticket)
-	createdTicket := database.Db.Create(&ticket)
-	err := createdTicket.Error
 
-	if err != nil {
-		w.Write([]byte(err.Error()))
+	if ticket.Name == "" || ticket.Desc == "" || ticket.Allocation == 0 {
+		http.Error(w, "Body Error", http.StatusNotFound)
+		return
+	} else {
+		createdTicket := database.Db.Create(&ticket)
+		err := createdTicket.Error
+
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+
+		json.NewEncoder(w).Encode(&ticket)
+		w.WriteHeader(http.StatusOK)
 	}
-
-	json.NewEncoder(w).Encode(&ticket)
-	w.WriteHeader(http.StatusOK)
 }
 
 // swagger:operation GET /ticket/{id} getTicket
@@ -56,16 +64,15 @@ func CreateTicket(w http.ResponseWriter, r *http.Request) {
 func GetTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
-	database.Db.First(&ticket, params["id"])
+	dbResult := database.Db.Where("id = ?", params["id"]).Find(&ticket)
 
-	if ticket.ID == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Task not found"))
+	if ticket.ID == 0 || errors.Is(dbResult.Error, gorm.ErrRecordNotFound) {
+		http.Error(w, "Ticket not found", http.StatusNotFound)
 		return
+	} else {
+		json.NewEncoder(w).Encode(&ticket)
+		w.WriteHeader(http.StatusOK)
 	}
-
-	json.NewEncoder(w).Encode(&ticket)
-	w.WriteHeader(http.StatusOK)
 }
 
 // swagger:operation POST /ticket_options/{id}/purchase purchaseTicket
@@ -85,18 +92,28 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 func PurchaseTicket(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var ticket models.Ticket
-	database.Db.First(&ticket, params["id"])
+	dbResult := database.Db.Where("id = ?", params["id"]).Find(&ticket)
 
-	var purchase models.TicketPurchase
-	json.NewDecoder(r.Body).Decode(&purchase)
-
-	if ticket.Allocation >= purchase.Quantity {
-		database.Db.Model(&models.Ticket{}).Where("id = ?", ticket.ID).Update("allocation", ticket.Allocation-purchase.Quantity)
-
-		w.Write([]byte("Purchase Complete"))
-		w.WriteHeader(http.StatusOK)
+	if ticket.ID == 0 || errors.Is(dbResult.Error, gorm.ErrRecordNotFound) {
+		http.Error(w, "Ticket not found", http.StatusNotFound)
+		return
 	} else {
-		w.Write([]byte("Not available ticket allocation"))
-		w.WriteHeader(http.StatusNotFound)
+		var purchase models.TicketPurchase
+		json.NewDecoder(r.Body).Decode(&purchase)
+
+		if purchase.Quantity == 0 || purchase.UserID == "" {
+			http.Error(w, "Body Error", http.StatusNotFound)
+			return
+		} else {
+			if ticket.Allocation >= purchase.Quantity {
+				database.Db.Model(&models.Ticket{}).Where("id = ?", ticket.ID).Update("allocation", ticket.Allocation-purchase.Quantity)
+
+				w.Write([]byte("Purchase Complete"))
+				w.WriteHeader(http.StatusOK)
+			} else {
+				w.Write([]byte("Not available ticket allocation"))
+				w.WriteHeader(http.StatusNotFound)
+			}
+		}
 	}
 }

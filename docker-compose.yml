@@ -1,11 +1,14 @@
 version: "4.0"  # optional since v1.27.0
 services:
   postgres:
-    image: postgres
+    image: postgres:latest
     environment:
       POSTGRES_USER: baikal
       POSTGRES_PASSWORD: 12345678
+      POSTGRES_HOST: 0.0.0.0
+    expose: ["5434"]
     ports: ["5434"]
+    networks: ["baikal"]
     command: -p 5434
 
   pg-admin:
@@ -15,11 +18,19 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=admin
       - PGADMIN_LISTEN_PORT=5050
     depends_on: ["postgres"]
+    expose: ["5050"]
     ports:
       ["5050:5050"]
+    networks: ["baikal"]
 
   go-app:
     build: .
+    expose: ["3000"]
     ports:
       ["3000:3000"]
     depends_on: ["postgres"]
+    networks: ["baikal"]
+
+networks:
+  baikal:
+    driver: bridge

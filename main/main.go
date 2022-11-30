@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
 
 	"github.com/cmbaykal/go-postgre-task/main/database"
 	"github.com/cmbaykal/go-postgre-task/main/models"
@@ -12,7 +13,14 @@ import (
 )
 
 func main() {
-	database.Connect()
+	cmd := exec.Command("go","test","-v")
+	err:= cmd.Run()
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	database.Connect("host=postgres user=baikal password=12345678 dbname=postgres port=5434")
 	database.Db.AutoMigrate(&models.Ticket{})
 
 	r := mux.NewRouter()
